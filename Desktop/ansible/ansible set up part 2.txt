@@ -1,0 +1,606 @@
+ANSIBLE  (CONFIGURE MANAGEMENT TOOL) 
+
+ansible is a push mode where chef & puppet are pull model structure 
+
+it is a configuration management tool which is automating your infrasture
+
+requirement :- python installation control server/master  as well as node/client/production server.\
+               user configured/createion with sudo privilages
+
+Advantages:- no programming language, no agent required in node
+             no database, no complex upgrade
+
+USED IN:- change management :- chnaging the software or version 
+          provising :- creating infrastrure componant
+          AUTOMATION :- same stuff we can do in multi machines
+          Orchestration :- which time perfome firstwhich task second thried ,..decide order.
+
+
+    control server(ansible installed)   >>ssh/winRM>>  node(python installed & user configured)  
+        playbook yml                          execute in python 
+
+
+It uses a language (YAML) in playbooks, node or client or production server should have python otherwise ansible won't work.
+
+Plays and Playbooks
+• An Ansible playbook is made of of individual plays
+• A play is a task that is performed
+• Playbooks are in YAML format
+• Playbook must start with --- at the top,
+
+
+Static inventories by default /etc/ansible/hosts
+
+• Static inventories can be located anywhere use the -i option to include file. A path should included. An example is :
+• ansible all -i /home/ansible/myhosts -m ping
+
+
+
+
+###ANSIBLE  IN WINDOWS MACHINE####
+
+STEPS:- 1.) download git bash (git for windows)
+        2.) download virtualbox for windows
+        3.) download VisualStuduio editor for windows to write playbook (require for macos and linux also) where 
+        4.) AWS Account
+
+
+
+
+Inventory :- list of nodes where your control server has to connect it
+carries machine name and ip address
+             static or dynamic list
+             static or local list locati on :- /etc/ansible/hosts
+             means watevre server u want to configure from , ansible put into the inventory
+              
+Module :-  If we want to install swomthing through ansible,module requird    
+modules are Hydempodence  but linux commands are not      
+ example:- yum \
+
+
+Variable :- to pass the values
+
+Ansible facts :- whenever we push somthing from control server ansible facts gives the detail of nodes  like, memory, free space 
+ 
+
+Play and Playbook :- a task or Play what we define in yaml file.
+it uses module
+
+
+Configuration Files :- log location gives := /etc/ansible/ansible.cfg
+can change the defauly behaviour.
+
+Templstes :- combination of static and dynamic text or image of a yml file.
+
+Handlers :- 
+
+
+Roles:- for reusable of your codes , we use this
+
+Ansible Valt :- saves the password, sensitive data and files. 
+
+
+Ansible Towar :-                              
+
+
+
+# go to http://github.com/asquarezone/AnsibleZone
+
+# copy the repository url and paste into local folder, inside the git bash terminal
+
+
+* git clone <paste it here>
+
+* git pull
+
+
+* code .       #{tpo open visualstudio}
+
+# click on the last or 5th option of left side toolbar aand search ansible and install autocomplete-ansible..
+
+# click on reloads        #<it will give u help to write>
+
+
+
+
+
+
+
+# login to ur control server already installed ansible and configuration done 
+
+* sudo -i
+
+* apt-get update
+
+* cd /etc/ansible/       #{inventory location}
+
+* ls   
+
+* chmod 777 hosts
+
+* vi hosts        #{host file is a inventory} #{adding nodes}
+
+#mynodes            #{adding at last of the file}
+node1DNSaddress  or node1IPaddress       #{save & exit}
+
+
+* ansible -m ping all      #('-m' = module, 'all'= pinging all the node which are present in hosts) 
+###########{error :- unreachable , cuzz ssh-copy-id had given for ansible not for root}
+###########{Solution :- switch to the ansible user}
+
+* exit
+
+* su ansible
+
+* ansible -m ping all
+
+* exit         #{go back to root}
+
+* vi /etc/ansible/hosts           #{adding more nodes}
+
+#mynodes
+node1DNSaddress  or node1IPaddress       
+node2DNSaddress  or node2IPaddress
+node3DNSaddress  or node3IPaddress      #{save & exit}
+
+
+* su ansible
+
+* cd ~
+
+* ansible -m ping all
+
+
+###{senerio:- u will get 2 webserver and 1 dbserver for that ul hv to perform different task how it is possible
+anser:- grouping}
+
+* exit
+
+
+* vi /etc/ansible/hosts         #{grouping adding }
+
+[webserver]                #{Node1 and node 3 is webserver }
+node1DNSaddress  or node1IPaddress       
+node3DNSaddress  or node3IPaddress
+
+[dbserver]
+node2DNSaddress  or node2IPaddress    #{node2 is a dbserver}
+
+* su ansible
+
+* ansible -m ping web server
+
+* ansible -m ping dbserver
+
+
+* exit 
+
+#{senerio :- basedon ur ubuntu OS patchs are goin to add}
+* vi /etc/ansible/hosts   #{ senerio:- a machine can be a part of any group}
+
+[ubuntu]
+node1DNSaddress  or node1IPaddress       
+node3DNSaddress  or node3IPaddress
+
+* su ansible
+
+* ansible -m ping ubuntu
+
+* exit or ctrl+d
+
+* sudo -i
+
+* vi /etc/ansible/hosts
+
+* su ansible
+
+* cp /etc/ansible/hosts ~           #{coping the inventory file}
+
+* cd ~
+
+* ll
+
+* mv hosts myinv   #{renaming inventory}
+
+* vi myinv       #{remove everything in the file and edit below command}
+[ubuntu]
+node1DNSaddress  or node1IPaddress       
+node3DNSaddress  or node3IPaddress         #{save & exit}
+
+
+* ansible -m ping all        
+
+
+* ansible -m ping -i myinv all                 #{'-i'= inventory file is not default}
+
+
+* ctrl+d
+
+
+## login to the controll server
+    
+* su ansible
+     
+* sudo -i
+
+* sudo apt-get update
+
+* sudo apt-get install git 
+
+* sudo mkdir playbooks
+
+* cd playbooks                #{go yo the git repository folder}
+
+* sudo vi myfirstplaybook.yml            #{creating playbook}
+
+---                          #{copy from here}
+- hosts: all                   #{where u want to apply, here all means for every machine}
+  tasks:                           #{what u want to apply}
+  - name: ping the node
+    ping:                         #{save & exit]
+
+
+* cat /etc/ansible/hosts
+
+* ansible-playbook myfirstplaybook.yml              #{run the playbook}
+
+
+* vi myfirstplaybook.yml            #{creating playbook}
+
+---                          #{copy from here}
+- hosts: ubuntu                   #{where u want to apply, here ubuntu machine only}
+  tasks:                           #{what u want to apply}
+  - name: ping the node
+    ping:                         #{save & exit]
+
+
+
+
+
+#{apache install on ubuntu through yml formate}
+
+* sudo vi apacheonubuntu.yml
+
+---
+- hosts: ubuntu
+  sudo: yes
+  tasks:
+    - name: install apache2
+      apt: name=apache2 update_cache=yes state=latest    #{vi /etc/apache2/ports.conf :- port location of apache}
+
+   OR 
+
+
+---                #{error in this script, use above}
+- hosts: ubuntu
+  become: yes       #{sudo = become, sudo require -K}
+  tasks:
+  - name: update the package
+    apt:
+      name: update
+      update_cache: yes
+  - name: install apache
+    apt:
+      name: apache2
+      state: present           
+
+
+* ansible-playbook apacheonubuntu.yml -K     #{running file, "-K"= to ask password}
+
+  
+* go to bowser node1Ipaddress:80            #{open the port 80 in security group>inbound traffic}
+               node3IPaddress:80
+
+
+
+
+
+#ansible apache(httpd) on dbserver(redhat) in yaml formate
+
+* vi apacheonredhat.yml    #(create a file n edit)
+
+---
+- hosts: database
+  become: yes
+  tasks:
+  - yum:
+      name: httpd
+      state: present
+  - service:
+      name: httpd
+      state: started
+
+
+
+* ansible-playbook apacheonredhat.yml -K     #{run file}
+
+* go to bowser node2Ipaddress:80       
+
+###{note :- if status is showing changed (yellow color)
+ than follow the steps}
+
+* ssh node2ipadd
+
+* sudo service httpd stop
+
+* sudo service httpd status
+
+* exit
+
+* ansible-playbook apacheonredhat.yml -K
+
+
+
+
+# install TOMCAT7
+
+
+* vi tomcat7.yml
+
+---
+- hosts: ubuntu
+  become: yes
+  tasks: 
+  - apt:
+      name: tomcat
+      state: present
+      update_cache: yes
+
+
+* ansible-playbook tomcat7.tml -K    #{open the port}
+
+#{go to the browser node1ipaddress:8080}
+
+
+#{ working on control machine here}
+
+* cd 
+
+* su ansible
+
+* ansible -m start dbserver     ####{not sure}
+         or
+* ansible -m "command" -a "cat /etc/motd" dbserver
+         or
+* ansible -v -m "command" -a "cat /etc/motd" dbserver      #{get log}
+         or 
+* ansible -vv -m "command" -a "cat /etc/motd" dbserver    #{log + details}
+         or
+* ansible -vvv -m "command" -a "cat /etc/motd" dbserver    #{logs + more details}
+
+
+* ansible -m setup dbserver     #{naby details}    
+ 
+
+
+###{senerio:- "copy file" from control server to node machine}######## .
+
+* cd ~
+
+* cd playbooks
+
+* vi test.yml            #{this file going to be copied to node from control}
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: copy the file
+    copy:                                  #{module}
+      src: /home/ansible/myinv            #{control location}
+      dest: /home/ansible/myinvcopied            #{node location}  {save and exit}
+
+
+* ansible-playbook -K -v test.yml   #{after running this command , file will get copied in all the hosts  from control server}
+
+* ssh node1ipadd        #{login and verify ,file is there or not}
+
+* ls               
+ 
+* ctrl+d or exit
+      
+* ssh node2ipadd
+
+* ls 
+
+* exit or ctrl+d
+
+* ssh node3ipadd
+
+* ls 
+
+* exit or ctrl 
+
+#{we are in control server ansible user now}
+     |
+     ^
+     |
+
+####{senerio(1):- i want to download jenkins on my node machine's(ubuntu) folder}####
+####{senerio(2):- i want to download jenkins on my node machine's(Tomcat server) folder}####
+
+
+# http://jenkins.io         #{type in the browser}
+
+# click on "download"
+
+# click on "Generic java package (.war)" copy the link from download history   #{copy the .war file link}
+
+
+* vi test.yml            #{this file going to be copied to node from control}
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: copy the file
+    copy:                                  #{module}
+      src: /home/ansible/myinv            #{control location}
+      dest: /home/ansible/myinvcopied            #{node location}
+  - name: Get_url for downloading from http
+    get_url:
+       url: <paste the generic java package(.war) link here>              
+       dest: /home/ansible/jenkins.war                     ###<<<<Senerio(1)  for ubuntu
+             or
+       dest: /var/lib/tomcat7/webapps/jenkins.war          ###<<<<Senerio(2)  for tomcat 
+    
+
+* ansible-plabook -K -vvv test.yml        
+
+* ssh node1@ipadd   #{login and verify file in all hosts}
+
+* ls           
+     
+* exit or ctrl 
+
+* ssh node3@ipadd   #{login and verify file in all hosts}
+
+* ls           
+     
+* exit or ctrl
+
+* ssh node2@ipadd   #{login and verify file in all hosts}
+
+* ls           
+     
+* exit or ctrl
+
+#### senerio:- download git on node machine
+
+# login to control server
+
+* su ansible
+
+* cd playbooks
+
+* vi loops.yml
+---
+- hosts: ubuntu
+  become: yes
+  tasks:
+  - name: install utilities
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items: ["git","nano", "tree", "wget"]
+
+
+* ansible-playbook -K -i hosts loops.yml
+
+* ssh nodemachineipadd
+
+* exit
+###SENERIO:- static content file
+
+* cd ~
+
+* su ansible
+
+* vi basic.j2
+hi 
+hello 
+dude         #{:wq= save and exit}
+
+
+* vi template-one.yml
+---
+- hosts: all
+  become: yes
+  tasks: 
+  - name: basic template with no dynamic content
+    template:                   #{module}
+      src: basic.j2
+      dest: /home/ansible/basic         ##{save & exit}
+ 
+
+
+* ansible-playbook -K template-one.yml
+
+* ssh nodeipaddress   #{file will be present in all node}
+
+* ls
+
+* cat basic
+
+* exit
+
+
+###Senerio:- Now we want to print hostname of node2 in the file     #{dynamic contentfile}
+
+* ansible -m setup ubuntu    #{find the ansible_hostname}
+
+* vi first.j2
+hi
+hello
+{{ ansible_hostname }}   #{paste it here & save & exit}
+
+* vi template-first.yml
+--- hosts: all
+    become: yes
+    tasks:
+    - name: first template
+      template:
+        src: first.j2
+        dest: /home/ansible/first
+
+* ansible-playbook -K template-first.yml
+
+* cat /home/ansible/first         #{copied in local host also}
+
+* ssh node2ipadd       #{copied in everynode}
+
+* ls
+
+* cat /home/ansible/first
+
+* exit
+
+
+
+
+
+
+
+------------------------
+      QUESTION & ANSWERES
+
+
+Q.) can ansible create 100 ec2 instace or VMs or virtual box?
+A.) possible for ec2 and VM not for virtual box! but it needs modules and in VM only it requires vspehere also not vmware works6tation
+
+Q.) copy module and get_url module difference?
+A.) when we want to copy a file from local/control server to node/remote machine we use copy module
+===>when we want to download a file from local/control server to node/remote machine we use get_url module.
+
+Q.) what is inventory, module, playbook, play and ansible valt?
+A.)a.) inventory:- which contains information of node ip address and memory.    location:- /etc/ansible/hosts
+   b.) module:- which does the task or job or play in ur playbook    i.e:-   apt and yum
+   c.) playbook :- it is in yaml format which conatins module, resources and plays.
+   d.) play:- nothing but a task or job which will achive by module in playbook.
+   e.) ansible valt:- which contain sensitive data like passowrd or etc.
+
+
+Q.) HANDLER IS WHAT ?
+A.)
+
+Q.) Anible towar is what?
+A.)
+
+Q.) tomcat server location ?
+A.) /var/lib/tomcat7/webapps/
+
+Q.) password authentication location
+A.) /etc/ssh/sshd_config
+
+Q.) key's location?
+A.) .ssh folder
+
+Q.) apache2 port number change how ?
+A.)* vi /etc/apache2/ports.conf 
+*    Listen 8090
+*    vi /etc/apache2/sites-enabled/000-default.conf
+*    <VirtualHost *:8090>
+*    sudo systemctl restart apache2
+*    sudo netstat -tulpn | grep :8090
+*    http://IP-address:8090.
+
+Q.) Block the port how?
+A.) https://www.tecmint.com/block-ssh-and-ftp-access-to-specific-ip-and-network-range/

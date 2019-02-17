@@ -1,0 +1,22 @@
+ansible copy file from control to node
+
+* su ansible
+
+* cd ~
+
+* vi test.yml            #{this file going to be copied to node from control}
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: copy the file
+    copy:                                  #{module}
+      src: /home/ansible/myinv            #{control location}
+      dest: /home/ansible/myinvcopied            #{node location}  {save and exit}
+
+
+* ansible-playbook -K -v test.yml   #{after running this command , file will get copied in all the hosts  from control server}
+
+* ssh node1ipadd        #{login and verify ,file is there or not}
+
+* ls  

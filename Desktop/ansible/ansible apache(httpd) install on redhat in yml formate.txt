@@ -1,0 +1,18 @@
+ansible apache(httpd) on redhat in yaml formate
+
+* vi apacheonredhat.yml    #(create a file n edit)
+
+---
+- hosts: redhat
+  become: yes
+  tasks:
+  - yum:
+      name: httpd
+      state: present
+  - service:
+      name: httpd
+      state: started
+
+
+
+* ansible-playbook apacheonredhat.yml -K  #{run file}

@@ -1,0 +1,14 @@
+
+* vi tomcat7.yml
+
+---
+- hosts: ubuntu
+  become: yes
+  tasks: 
+  - apt:
+      name: tomcat
+      state: present
+      update_cache: yes
+
+
+* ansible-playbook tomcat7.tml -K

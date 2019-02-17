@@ -1,0 +1,98 @@
+# ansible installing apache on node machine from control server in a yaml formate automateic
+
+       
+
+
+* vi apacheonubuntu.yml     #{create a playbook/file}
+
+---
+- hosts: ubuntu
+  sudo: yes
+  tasks:
+    - name: install apache2
+      apt: name=apache2 update_cache=yes state=latest
+
+
+* ansible-playbook apacheonubuntu.yml -K     OR
+
+
+
+---
+- hosts: ubuntu            
+  become: yes
+  tasks:
+    - name: update the package
+      apt:
+        name: update
+        update_cache: yes
+    - name: install apache
+      apt:
+        name: apache2
+        state: latest
+
+
+* ansible-playbook apacheonubuntu.yml -K   #{run}
+
+
+
+
+
+Q.) can deploy apache on 1000 vm through ansible 
+A.) step1.) node machine
+ 
+* apt-get install python
+
+* adduser ansible      #{same in node machine} 
+
+* visudo          #{giving root permission to }
+
+* cd etc/ssh/sshd_config      #{to change passwordauthentication  yes}
+
+* cd etc/ansible/hosts    #{add ip addree only of nodes, this is inventory}
+
+* su ansible
+
+
+step:2.) control server
+* install ansible
+
+* adduser ansible      #{same in node machine} 
+
+* visudo          #{giving root permission to }
+
+* cd etc/ssh/sshd_config      #{to change passwordauthentication  yes}
+
+* cd etc/ansible/hosts    #{add ip addree only of nodes, this is inventory}
+
+* su ansible
+
+* ssh-keygen          #{keygenerating}
+
+* ssh-cpoy-id nodeIPadd          #{sharing key with nodes}
+
+* ssh nodeIpAdd           #{can ssh directly widout password}
+
+* exit
+
+* cp etc/ansible/hosts ~
+
+* cd ~
+
+* mkdir playbooks
+
+* sudo vi apacheonubuntu.yml
+
+---
+- hosts: ubuntu
+  sudo: yes
+  tasks:
+    - name: install apache2
+      apt: name=apache2 update_cache=yes state=latest
+
+
+* ansible-playbook apacheonubuntu.yml -K     #{running file, "-K"= to ask password}
+
+  
+* go to bowser node1Ipaddress:80            #{open the port 80 in security group>inbound traffic}
+               node3IPaddress:80
+

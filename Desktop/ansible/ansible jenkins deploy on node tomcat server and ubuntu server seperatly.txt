@@ -1,0 +1,41 @@
+####{senerio(1):- i want to download jenkins on my node machine's(Ubuntu) folder}####
+####{senerio(1):- i want to download jenkins on my node machine's(Tomcat server) folder}####
+
+* ssh controlserver@ipaddress
+
+* adduser ansible
+
+* su ansible              {# create and switch to ansible user}
+
+###need to install ansible, visudo, plaaybook add inventory /etc/ansible/hosts
+
+# http://jenkins.io         #{type in the browser}
+
+# click on "download"
+
+# click on "Generic java package (.war)" copy the link from download history   #{copy the .war file link}
+
+
+* vi test.yml            #{this file going to be copied to node from control}
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: copy the file
+    copy:                                  #{module}
+      src: /home/ansible/myinv            #{control location}
+      dest: /home/ansible/myinvcopied            #{node location}
+  - name: Get_url for downloading from http
+    get_url:
+       url: <paste the generic java package(.war) link here>    #{2or3 space beforewriting is correct here}          
+       dest: /home/ansible/jenkins.war                     ###<<<<Senerio(1)
+                or
+       dest: /var/lib/tomcat7/webapps/jenkins.war          ###<<<<Senerio(2)   
+
+* ansible-plabook -K -vvv test.yml        
+
+* ssh node1@ipadd   #{login and verify file in all hosts}
+
+* ls   
+
+# now restart tomcat server       

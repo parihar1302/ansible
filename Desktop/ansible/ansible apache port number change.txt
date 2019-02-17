@@ -1,0 +1,8 @@
+Q.) apache2 port number change how ?
+A.)* vi /etc/apache2/ports.conf 
+*    Listen 8090
+*    vi /etc/apache2/sites-enabled/000-default.conf
+*    <VirtualHost *:8090>
+*    sudo systemctl restart apache2
+*    sudo netstat -tulpn | grep :8090
+*    http://IP-address:8090
