@@ -1,4 +1,4 @@
-###Ansible userdata script launch ec2 with apache    
+###Ansible userdata script to launch ec2 with apache    
 
 requirement :- aws access & secreate key
                ssh keypair 
@@ -31,6 +31,8 @@ requirement :- aws access & secreate key
    22  sudo chmod 777 hosts
    23  ls
    24  vi hosts            ##inventory file lpcation
+   24  [localhost]
+   25  <masterserverIPaddress>
    25  ansible -m ping all       ##verifing connection
 ##{error:- 3.84.164.152 | UNREACHABLE! => {
     "changed": false,
