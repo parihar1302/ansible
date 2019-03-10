@@ -48,7 +48,7 @@ requirement :- aws access & secreate key
    32  sudo pip install boto boto3
    33  export AWS_ACCESS_KEY_ID='AxIAJTCHdgfdNG5MQW4ZXZDQ'       
    34  export AWS_SECRET_ACCESS_KEY='VzLHWXpJkanIKOgfgfxBkD51Lsa4xl38QIcX5frHbnQgZ'
-   35  sudo vi site.yml
+   35  sudo vi mcsher.yml
 ---
 - hosts: all
   connection : local
@@ -56,7 +56,7 @@ requirement :- aws access & secreate key
   tasks:
     - name: Provision a set of instance
       ec2:
-         key_name: bantai       ##ssh keypair
+         key_name: gullyboy       ##ssh keypair
          instance_type: t2.micro      ##instance size
          user_data: |     ##{script to install apache or anyother packge}
                #!/bin/sh
@@ -70,7 +70,7 @@ requirement :- aws access & secreate key
          assign_public_ip: yes   
                                  ###{save and exit}             
 
-   36  ansible-playbook -K site.yml     ##{copy & paste ip of newly created instance in url}
+   36  ansible-playbook -K mcsher.yml     ##{copy & paste ip of newly created instance in url}
 
 
  
