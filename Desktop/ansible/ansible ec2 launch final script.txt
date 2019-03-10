@@ -1,0 +1,89 @@
+#  final ec2 launch by ansible main script
+
+step 1) login to ec2 control server
+
+sudo -i
+apt-get update
+apt-get install software-properties-common
+apt-add-repository ppa:ansible/ansible
+apt-get update
+apt-get install ansible
+adduser ansible
+visudo  
+> ansible ALL=(ALL:ALL) ALL     #{add this command below %sudo  ALL=(ALL:ALL) ALL}
+
+vi /etc/ssh/sshd_config
+> #{find 'passwordauthentication' and make it 'yes' and save & exit}   {for redhat uncommand '#'}
+
+service ssh restart
+
+vi /etc/ansible/hosts    #hosts is inventory at the last of the file type belo command}
+> [localhost]            # for remote machine need to add their ipaddress 
+> localhostipAddress  
+
+ansible -m ping localhost
+     or
+ansible -m ping all
+
+> exit
+> su ansible
+ssh-keygen
+ssh-copy-id ansible@ipadd    #{ip add of machine where you want to deploy}
+
+ssh ansible@localhost
+
+#{follow step 2 as it is}
+
+
+
+
+STEP.2) 
+
+su ansible
+sudo apt-get update
+cd /etc/ansible
+sudo vi hosts        #{verify ip}
+cp /etc/ansible/hosts ~
+cd 
+mv hosts myinv
+ansible -m ping all
+
+#{follow step 3 as it is}
+
+
+
+step 3.)
+      
+* sudo apt-get install -y python python-dev python-pip      #boto act as api for aws
+
+* sudo pip install boto boto3       
+
+* export AWS_ACCESS_KEY_ID='AK123'
+  export AWS_SECRET_ACCESS_KEY='abc123'
+
+* sudo vi ec2.yml
+
+---
+- hosts: all     #first select localhost only in inventory
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: Provision a set of instances
+      ec2:
+         key_name: node1     #ec2 keypair.pem
+         instance_type: t2.micro     #instance type
+         user_data: |
+               #!/bin/sh
+               sudo apt-get install apache2 -y | sudo apt update | sudo service apache2 enable | sudo service apache2 restart
+         image: ami-0f9cf087c1f27d9b1     #ubuntu 16.04 image in n.varginia
+         region: us-east-1   ##region n.varginia
+         wait: yes
+         group: default    #security group name not id number
+         count: 4    #number of instance     #{19 more instace can launch, if ur using 1 ec2 instace already}
+         vpc_subnet_id: subnet-670d9400
+         assign_public_ip: yes
+
+* ansible-playbook -K ec2.yml
+
+* go to the ec2 consol dadshboard   #{verify}
+

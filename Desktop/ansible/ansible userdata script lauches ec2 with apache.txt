@@ -1,0 +1,76 @@
+###Ansible userdata script launch ec2 with apache    
+
+requirement :- aws access & secreate key
+               ssh keypair 
+
+
+    1  apt-get update
+    2  apt-get install software-properties-common
+    3  apt-add-repository ppa:ansible/ansible
+    5  apt-get install software-properties-common
+    6  apt-add-repository ppa:ansible/ansible
+    7  apt-get update
+    8  apt-get install ansible -y        ##ansible installation
+   10  adduser ansible         ##adding user      
+   11  visudo            ###{giving permission to ansible user to run any command
+   12  ansible ALL=(ALL:ALL) ALL     ##{add this command below %sudo  ALL=(ALL:ALL) ALL}
+
+##{note:- below 2 steps follow only when u r working in aws ec2 infrasture but for virtual machin or physicl machine no need to follow. cuzz in       aws there's no password based authentication}
+
+   13  vi /etc/ssh/sshd_config           ##{find 'passwordauthentication' and make it 'yes' and save & exit}   {for redhat uncommand '#'}
+   14  passwordauthentication yes         ##{only password user can have entry}
+
+   14  service ssh restart
+   15  ssh ansible@localhost
+   16  apt-get update
+   17  exit
+   18  su ansible 
+   19  sudo apt-get update
+   20  cd /etc/ansible
+   21  ls
+   22  sudo chmod 777 hosts
+   23  ls
+   24  vi hosts            ##inventory file lpcation
+   25  ansible -m ping all       ##verifing connection
+##{error:- 3.84.164.152 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "Failed to connect to the host via ssh: Warning: Permanently added '3.84.164.152' (ECDSA) to the list of known hosts.\r        \nansible@3.84.164.152: Permission denied (publickey,password).",
+    "unreachable": true
+    }}
+
+##{solution:- passwordless login}
+   26  ssh-keygen             ##generating keypair        
+   27  ssh-copy-id ansible@localhost      <--passwordless login ##copy ssh key to the localhost(can copy to remote user also)  
+   28  ssh ansible@localhost
+   29  sudo apt-get update
+   30  exit
+   31  sudo apt-get install -y python python-dev python-pip
+   32  sudo pip install boto boto3
+   33  export AWS_ACCESS_KEY_ID='AxIAJTCHdgfdNG5MQW4ZXZDQ'       
+   34  export AWS_SECRET_ACCESS_KEY='VzLHWXpJkanIKOgfgfxBkD51Lsa4xl38QIcX5frHbnQgZ'
+   35  sudo vi site.yml
+---
+- hosts: all
+  connection : local
+  gather_facts: False
+  tasks:
+    - name: Provision a set of instance
+      ec2:
+         key_name: bantai       ##ssh keypair
+         instance_type: t2.micro      ##instance size
+         user_data: |     ##{script to install apache or anyother packge}
+               #!/bin/sh
+               sudo apt-get install apache2 -y | sudo apt update | sudo service apache2 enable | sudo service apache2 restart
+         image: ami-0f9cf087c1f27d9b1     ##image ubuntu 16.04 in N.varginia
+         region: us-east-1    ##N.varginia
+         wait: yes
+         group: default    #security group name not id number
+         count: 4    ##{maximum 20 instance can create in a region}
+         vpc_subnet_id: subnet-48cbaf66
+         assign_public_ip: yes   
+                                 ###{save and exit}             
+
+   36  ansible-playbook -K site.yml     ##{copy & paste ip of newly created instance in url}
+
+
+ 

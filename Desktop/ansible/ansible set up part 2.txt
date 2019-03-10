@@ -1,4 +1,4 @@
-ANSIBLE  (CONFIGURE MANAGEMENT TOOL) 
+ANSIBLE  (CONFIGURE MANAGEMENT TOOL)   https://www.softwaretestinghelp.com/ansible-playbooks-ansible-vaults/
 
 ansible is a push mode where chef & puppet are pull model structure 
 
@@ -552,6 +552,11 @@ hello
 * cat /home/ansible/first
 
 * exit
+
+
+AKIAIOCZUHUKUMSLNFAQ
+laehyztK9hbO/CQ5MzHC77PXTfDvs8nrPyY2UVF0
+@bJ{|!'%FFJv
 
 
 

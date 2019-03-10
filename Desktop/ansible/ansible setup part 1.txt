@@ -1,5 +1,5 @@
- ansible
-
+ ansible    https://www.softwaretestinghelp.com/ansible-playbooks-ansible-vaults/
+        
 * ansible required on control server 
 
 * python required on node machine
@@ -14,7 +14,27 @@
 * config file location :- /etc/ansible/ansible.cfg  #{log present hre}
 
 
-* 
+
+
+***$%$#$ install software packages like git, apache and maven
+          -------------------------------------------
+$ ansible webservers –m yum -a “name=git state=present” --becomes     #{install git}
+
+$ ansible webservers -m yum -a “name=git state=latest”               #{git latest verxsion install}
+
+$ ansible webservers -m yum -a "name=httpd state=present" –become    #{apache install}
+
+$ ansible webservers -m yum -a "name=maven state=absent" –become     #{verify maven}
+
+$ ansible webservers -m service -a “name=httpd state=started” --become     #{Servvice module to start httpd}
+
+$ ansible webservers -m service -a “name=httpd state=stopped” --become     #{Servvice module to stop httpd}
+
+$ ansible webservers -m service -a “name=httpd state=restarted --become    #{Servvice module to restart httpd}
+
+$ ansible webservers -m user -a 'name=user1 password=user1' --become     #{to add user}
+
+$ ansible webservers -m user -a 'name=user1 state=absent' --become      #{to delete the user}
 
 
 
@@ -45,12 +65,13 @@ requirement:- atleast 2 machine required a.) control/master/ansible server     b
 
 * apt-get install software-properties-common
 
+
 * apt-add-repository ppa:ansible/ansible
 
 * apt-get update
 
 
-* apt-get install ansible 
+* apt-get install ansible -y
 
 
 * adduser ansible          #{CREATE USER}          {passwd ansible for rdhat after adduser}
