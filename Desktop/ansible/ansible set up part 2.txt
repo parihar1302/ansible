@@ -569,7 +569,7 @@ laehyztK9hbO/CQ5MzHC77PXTfDvs8nrPyY2UVF0
 
 
 Q.) can ansible create 100 ec2 instace or VMs or virtual box?
-A.) possible for ec2 and VM not for virtual box! but it needs modules and in VM only it requires vspehere also not vmware works6tation
+A.) possible for ec2 and VM not for virtual box! but it needs modules and in VM, it requires vspehere not vmware works6tation
 
 Q.) copy module and get_url module difference?
 A.) when we want to copy a file from local/control server to node/remote machine we use copy module
@@ -584,7 +584,8 @@ A.)a.) inventory:- which contains information of node ip address and memory.    
 
 
 Q.) HANDLER IS WHAT ?
-A.)
+A.) we need to restart service only if the changes are done to configuration files. Handlers provide that feature.
+    The handler is written like any other task but is called only if there are changes.
 
 Q.) Anible towar is what?
 A.)
@@ -611,4 +612,4 @@ Q.) Block the port how?
 A.) https://www.tecmint.com/block-ssh-and-ftp-access-to-specific-ip-and-network-range/
 
 Q.) Playbooks ?
-A.) Playbooks define variables, configurations, deployment steps, assign roles, perform multiple tasks. For E.g. COPY / DELETE Files and Folders,     install packages, start services. So primarily playbooks are defined to orchestrate the steps to multiple machines or servers and get them all to a     certain desired state.
+A.) Playbooks define variables, configurations, deployment steps, assign roles, perform multiple tasks. For E.g. COPY / DELETE Files and Folders,         install packages, start services. So primarily playbooks are defined to orchestrate the steps to multiple machines or servers and get them all to a      certain desired state.
