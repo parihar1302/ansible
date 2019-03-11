@@ -609,3 +609,6 @@ A.)* vi /etc/apache2/ports.conf
 
 Q.) Block the port how?
 A.) https://www.tecmint.com/block-ssh-and-ftp-access-to-specific-ip-and-network-range/
+
+Q.) Playbooks ?
+A.) Playbooks define variables, configurations, deployment steps, assign roles, perform multiple tasks. For E.g. COPY / DELETE Files and Folders,     install packages, start services. So primarily playbooks are defined to orchestrate the steps to multiple machines or servers and get them all to a     certain desired state.
