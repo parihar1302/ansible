@@ -7,7 +7,6 @@ Parameters:
   SecurityGroupIds:
     Type: List<AWS::EC2::SecurityGroup::Id>
     Description: Security want
-
   KeyName:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Key for ssh
@@ -55,11 +54,11 @@ vi ansible.yml
   tasks:
     - name: First take provision from ec2
       cloudformation:
-        stack_name: 'Ailaaa'
+        stack_name: 'mystack'
         state: present
         region: us-east-1
         disable_rollback: true
-        template_url: https://s3.amazonaws.com/folder/cloudformation.template     ##link of the uploaded file
+        template_url: https://s3.amazonaws.com/ansiblecloudformation/cloudformation.txt     ##link of the uploaded file
         template_parameters:
           KeyName: bantai                ##refer to cloudformation file
           SecurityGroupIds: sg-794b203a

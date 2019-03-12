@@ -63,7 +63,7 @@ requirement :- aws access & secreate key
          user_data: |     ##{script to install apache or anyother packge}
                #!/bin/sh
                sudo apt-get install apache2 -y | sudo apt update | sudo service apache2 enable | sudo service apache2 restart
-         image: ami-0f9cf087c1f27d9b1     ##image ubuntu 16.04 in N.varginia
+         image: ami-0a313d6098716f372     ##image ubuntu 16.04 in N.varginia
          region: us-east-1    ##N.varginia
          wait: yes
          group: default    #security group name not id number
