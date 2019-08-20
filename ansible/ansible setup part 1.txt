@@ -1,8 +1,9 @@
- ansible    https://www.softwaretestinghelp.com/ansible-playbooks-ansible-vaults/
-        
-* ansible required on control server 
+## ansible  setup part 1                   https://www.softwaretestinghelp.com/ansible-playbooks-ansible-vaults/
+                                  https://www.youtube.com/watch?v=nGVIR5MWq0U&list=PL6XT0grm_TfgP3OlZzmGh4Cq_rHtX8z7e&index=17
 
-* python required on node machine
+*** ansible required on control server 
+
+*** python required on node machine
 
 * inventory :- list of nodes , which your control server has to conncet 
 
@@ -16,7 +17,7 @@
 
 
 
-***$%$#$ install software packages like git, apache and maven
+***$%$#$ install software packages like git, apache and maven with adhoc commands
           -------------------------------------------
 $ ansible webservers –m yum -a “name=git state=present” --becomes     #{install git}
 
@@ -96,11 +97,10 @@ passwordauthentication yes         #{only password user can have entry}
 
 * sudo apt-get update
 
+
+
 #now follow the step 2.
-
-
-
-
+-----------------------------
 
 
 # STEP 2>) NODE MACHINE :- setting up ansible on ubuntu 14  {not required installation  of ansible}
@@ -118,9 +118,7 @@ passwordauthentication yes         #{only password user can have entry}
 
 * apt-get install ansible
 
-* python            #{verifing installtion} 
-
-* exit or ctrl+d
+* apt install python -y    #{installing python}
 
 
 *#note:- below 2 steps floow only for when u r working in aws ec2 , for virtual machin or physicl machine no need to follow. cuzz in aws there's no password based authentication
@@ -143,10 +141,10 @@ ansible ALL=(ALL:ALL) ALL     #{add this command below %sudo  ALL=(ALL:ALL) ALL}
 
 * sudo apt-get update
 
+
+
 #now follow step 3
-
-
-
+----------------------------
 
 
 # STEP 3>) CONTROL SERVER :- CONNECTING CONTROL SERVER (ansible)user TO NODE MACHINE (ansible)user
@@ -179,13 +177,6 @@ ansible ALL=(ALL:ALL) ALL     #{add this command below %sudo  ALL=(ALL:ALL) ALL}
 
 * exit
 
-* git clone https://github.com/asquarezone/AnsibleZone.git
-
-* git pull
-
-* code .         #{after installtion of visual studio code}
-
-*  
 
 
 
