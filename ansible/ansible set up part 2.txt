@@ -72,10 +72,10 @@ can change the defauly behaviour.
 
 Templstes :- combination of static and dynamic text or image of a yml file.
 
-Handlers :- 
+Handlers :- it is like a normal task but it only runs when task contains notify directive or somthing is changedin file.
 
 
-Roles:- for reusable of your codes , we use this
+Roles:- it is a primary mechanisum to break playbook into multiple file. and make complex mechanisum to essy. it contains var, handler, task, etc.
 
 Ansible Valt :- saves the password, sensitive data and files. 
 
