@@ -1,0 +1,304 @@
+### ansible installation on Ubuntu18              https://dotlayer.com/how-to-use-an-ansible-playbook-to-install-wordpress/
+----------------------------------
+
+# step 1.) CONTROL SERVER :- setting up ansible on ubuntu 14
+
+
+* sudo -i
+
+* apt-get update 
+
+* apt-get install software-properties-common
+
+
+* apt-add-repository ppa:ansible/ansible
+
+* apt-get update
+
+
+* apt-get install ansible -y
+
+
+* adduser ansible          #{CREATE USER}          {passwd ansible for rdhat after adduser}
+
+* usermod -aG sudo ansible      ##{adding ansible user to sudo group}
+
+* visudo       #{giving permission to ansible user to run any command
+
+ansible ALL=(ALL:ALL) ALL     #{add this command below %sudo  ALL=(ALL:ALL) ALL}
+
+#note:- below 2 steps follow only for when u r working in aws ec2 infrasture but for virtual machin or physicl machine no need to follow. cuzz in aws there's no password based authentication
+
+* vi /etc/ss
+
+* vi /etc/ssh/sshd_config         #{find 'passwordauthentication' and make it 'yes' and save & exit}   {for redhat uncommand '#'}
+
+passwordauthentication yes         #{only password user can have entry}
+
+
+* service ssh restart           #{sshd for redhat }
+
+
+* ssh ansible@localhost         #{verifying working or not}
+
+* sudo apt-get update
+
+
+
+#now follow the step 2.
+-----------------------------
+
+
+# STEP 2>) NODE MACHINE :- setting up ansible on ubuntu 14  {not required installation  of ansible}
+
+
+* sudo -i
+
+* apt-get update 
+
+* apt install python -y    #{installing python}
+
+
+* vi /etc/ssh/sshd_config         #{find 'passwordauthentication' and make it 'yes' and save & exit}
+
+passwordauthentication yes         #{only password user can have entry}
+
+
+* service ssh restart
+
+* adduser ansible             #creating user
+
+* usermod -aG sudo ansible
+
+* visudo      #adding user to sudo group & so ansible user to run any command
+
+ansible ALL=(ALL:ALL) ALL     #{add this command below %sudo  ALL=(ALL:ALL) ALL}
+
+* ssh ansible@localhost         #{verifying working or not}
+
+* sudo apt-get update
+
+
+
+
+
+#now follow step 3
+----------------------------
+
+
+# STEP 3>) ON CONTROL SERVER :- CONNECTING CONTROL SERVER (ansible)user TO NODE MACHINE (ansible)user
+
+
+* su ansible           #{switching to ansible user}
+
+* ssh-keygen        #{generating key}         {optional ,just used for conviennce}
+
+* ssh-copy-id ansible@NodeIPAddress             {public or private ip address can be given of node cuzz we are in aws infratsure}
+           or
+  ssh-copy-id ansible@NodeDNSaddress            {public or private DNS address}
+
+
+* ssh NodeIPaddress           #{now directly login widout password cuzz wh have shard the keys}
+          or
+  ssh NodeDNSaddress
+
+* exit
+
+
+* sudo vi /etc/ansible/hosts
+[wordpress]
+nodeIPadd
+
+
+* cp /etc/ansible/hosts ~
+
+* ansible -m ping all
+
+##METHOD.1) by git cloning
+
+* git clone https://github.com/parihar1302/ansible_launches_wordpress.git
+
+* cd ansible_launches_wordpress
+
+* * vi hosts       ##add node ip and group name
+[wordpress]        
+nodeIPadd
+
+* ansible-playbook playbook.yml -i hosts -u ansible -K    ##(ansible is username which is created in node machine)
+
+
+* http://NodeIPaddress    ##hit the url
+
+         OR
+
+METHOD_2.) by manually 
+
+* mkdir ansible_launches_wordpress
+
+* cd ansible_launches_wordpress
+
+* mkdir roles
+
+* touch hosts
+
+* touch playbook.yml
+
+* vi hosts       ##add node ip and group name
+[wordpress]        
+nodeIPadd
+
+* cd roles       
+
+* ansible-galaxy init server   ##creating roles 
+* ansible-galaxy init php      #####creating roles
+* ansible-galaxy init mysql     ####creating roles
+* ansible-galaxy init wordpress   ####creating roles
+
+* cd ..
+
+* vi playbook.yml
+- hosts: all
+  gather_facts: False
+  
+  tasks:
+  - name: install python 2
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- hosts: wordpress
+
+  roles:
+    - server
+    - php
+    - mysql
+    - wordpress        ##save and exit
+
+
+
+* vi ansible_launches_wordpress/roles/server/tasks/main.yml    ###for server role
+---
+# tasks file for server
+- name: Update apt cache
+  apt: update_cache=yes cache_valid_time=3600
+  become: yes
+
+- name: Install required software
+  apt: name={{ item }} state=present
+  become: yes
+  with_items:
+    - apache2
+    - mysql-server
+    - php7.2-mysql
+    - php7.2
+    - libapache2-mod-php7.2
+    - python-mysqldb        ##save & exit
+
+
+
+
+* vi ansible_launches_wordpress/roles/php/tasks/main.yml    ##for php role
+---
+# tasks file for php
+- name: Install php extensions
+  apt: name={{ item }} state=present
+  become: yes
+  with_items:
+    - php7.2-gd 
+    - php7.2-ssh2  #save & exit
+
+
+
+
+* vi ansible_launches_wordpress/roles/mysql/defaults/main.yml    ##for mysql role
+---
+# defaults file for mysql
+wp_mysql_db: wordpress
+wp_mysql_user: wordpress
+wp_mysql_password: password
+
+
+
+
+* vi ansible_launches_wordpress/roles/mysql/tasks/main.yml    ##creating mysql db, user & password
+---
+- name: Create mysql database
+  mysql_db: name={{ wp_mysql_db }} state=present
+  become: yes
+
+- name: Create mysql user
+  mysql_user: 
+    name={{ wp_mysql_user }} 
+    password={{ wp_mysql_password }} 
+    priv=*.*:ALL
+
+  become: yes          ##save & exit
+
+
+
+
+
+* vi ansible_launches_wordpress/roles/wordpress/tasks/main.yml    #for wordpress role 
+---
+- name: Download WordPress
+  get_url: 
+    url=https://wordpress.org/latest.tar.gz      ##from_officialsite_downloadlink
+    dest=/tmp/wordpress.tar.gz
+    validate_certs=no
+
+- name: Extract WordPress
+  unarchive: src=/tmp/wordpress.tar.gz dest=/var/www/ copy=no
+  become: yes
+
+- name: Update default Apache site
+  become: yes
+  lineinfile: 
+    dest=/etc/apache2/sites-enabled/000-default.conf 
+    regexp="(.)+DocumentRoot /var/www/html"
+    line="DocumentRoot /var/www/wordpress"
+  notify:
+    - restart apache
+
+- name: Copy sample config file
+  command: mv /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php creates=/var/www/wordpress/wp-config.php
+  become: yes
+
+- name: Update WordPress config file
+  lineinfile:
+    dest=/var/www/wordpress/wp-config.php
+    regexp="{{ item.regexp }}"
+    line="{{ item.line }}"
+  with_items:
+    - {'regexp': "define\\('DB_NAME', '(.)+'\\);", 'line': "define('DB_NAME', '{{wp_mysql_db}}');"}        
+    - {'regexp': "define\\('DB_USER', '(.)+'\\);", 'line': "define('DB_USER', '{{wp_mysql_user}}');"}        
+    - {'regexp': "define\\('DB_PASSWORD', '(.)+'\\);", 'line': "define('DB_PASSWORD', '{{wp_mysql_password}}');"}
+  become: yes         ##save & exit
+
+
+
+
+* vi ansible_launches_wordpress/roles/wordpress/handlers/main.yml      ##to see wordpress on web installing apache
+---
+# handlers file for wordpress
+- name: restart apache
+  service: name=apache2 state=restarted
+  become: yes            ##save & exit
+
+
+* ansible-playbook playbook.yml -i hosts -u ansible -K    ##(ansible is username which is created in node machine)
+
+
+* http://NodeIPaddress    ##hit the url
+
+##{note whenever u install wordpresss by this doc, change the ip}
+
+
+
+
+
+
+
+
+
+
+
+
+
