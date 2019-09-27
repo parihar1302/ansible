@@ -586,6 +586,7 @@ A.)a.) inventory:- which contains information of node ip address and memory.    
 Q.) HANDLER IS WHAT ?
 A.) we need to restart service only if the changes are done to configuration files. Handlers provide that feature.
     The handler is written like any other task but is called only if there are changes.
+    Restart the new service after installation or reload the service after configuration change.
 
 Q.) Anible towar is what?
 A.)
