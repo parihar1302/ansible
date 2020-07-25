@@ -614,3 +614,20 @@ A.) https://www.tecmint.com/block-ssh-and-ftp-access-to-specific-ip-and-network-
 
 Q.) Playbooks ?
 A.) Playbooks define variables, configurations, deployment steps, assign roles, perform multiple tasks. For E.g. COPY / DELETE Files and Folders,         install packages, start services. So primarily playbooks are defined to orchestrate the steps to multiple machines or servers and get them all to a      certain desired state.
+
+Q.) Galaxy ?
+A.) Galaxy where user can store the role. We can retriive when we want.
+
+Q.) Ansible use which language?
+A.) Python and Powershell.
+
+Q.) How does Ansible connect Linux and Windows server?
+A.) Linux :- SSH
+    Windows:- WinRM
+
+
+
+
+
+
+*
