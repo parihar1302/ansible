@@ -166,6 +166,11 @@ node3DNSaddress  or node3IPaddress
 [dbserver]
 node2DNSaddress  or node2IPaddress    #{node2 is a dbserver}
 
+[appserver]                     ##{group inside the group} {doubt}
+appserver : children
+webserver
+dbserver
+
 * su ansible
 
 * ansible -m ping web server
@@ -624,6 +629,15 @@ A.) Python and Powershell.
 Q.) How does Ansible connect Linux and Windows server?
 A.) Linux :- SSH
     Windows:- WinRM
+
+Q.) Inventory file formate?
+A.) Yaml or Ionic formate
+
+Q.) Ansible configuration file location?
+A.) /etc/ansible/ansible.cfg
+
+
+
 
 
 
