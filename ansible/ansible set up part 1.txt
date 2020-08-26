@@ -103,7 +103,7 @@ passwordauthentication yes         #{only password user can have entry}
 -----------------------------
 
 
-# STEP 2>) NODE MACHINE :- setting up ansible on ubuntu 14  {not required installation  of ansible}
+# STEP 2>) NODE MACHINE :- setting up ansible on ubuntu 14  {not required installation  of ansible but python is mandetory}
 
 
 * sudo -i
@@ -176,41 +176,4 @@ ansible ALL=(ALL:ALL) ALL     #{add this command below %sudo  ALL=(ALL:ALL) ALL}
   ssh NodeDNSaddress
 
 * exit
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
