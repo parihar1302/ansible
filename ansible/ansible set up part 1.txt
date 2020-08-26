@@ -126,14 +126,14 @@ passwordauthentication yes         #{only password user can have entry}
 
 * vi /etc/ssh/sshd_config         #{find 'passwordauthentication' and make it 'yes' and save & exit}
 
-passwordauthentication yes         #{only password user can have entry}
+passwordauthentication yes         #{user can lgoin only through password now}
 
 
 * service ssh restart
 
 * adduser ansible             #creating user
 
-* visudo      #adding user to sudo group & so ansible user to run any command
+* visudo      #adding user to sudo group & so ansible user can run any command
 
 ansible ALL=(ALL:ALL) ALL     #{add this command below %sudo  ALL=(ALL:ALL) ALL}
 
