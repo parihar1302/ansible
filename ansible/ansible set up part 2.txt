@@ -23,16 +23,16 @@ USED IN:- change management :- chnaging the software or version
 It uses a language (YAML) in playbooks, node or client or production server should have python otherwise ansible won't work.
 
 Plays and Playbooks
-• An Ansible playbook is made of of individual plays
-• A play is a task that is performed
-• Playbooks are in YAML format
-• Playbook must start with --- at the top,
+â€¢ An Ansible playbook is made of of individual plays
+â€¢ A play is a task that is performed
+â€¢ Playbooks are in YAML format
+â€¢ Playbook must start with --- at the top,
 
 
 Static inventories by default /etc/ansible/hosts
 
-• Static inventories can be located anywhere use the -i option to include file. A path should included. An example is :
-• ansible all -i /home/ansible/myhosts -m ping
+â€¢ Static inventories can be located anywhere use the -i option to include file. A path should included. An example is :
+â€¢ ansible all -i /home/ansible/myhosts -m ping
 
 
 
@@ -563,10 +563,37 @@ AKIAIOCZUHUKUMSLNFAQ
 laehyztK9hbO/CQ5MzHC77PXTfDvs8nrPyY2UVF0
 @bJ{|!'%FFJv
 
+-------------
 
+## Ansible Tag:- It helps you to execute task, order task & skip task.
 
+vi tag.yml
+---
+- hosts: all
+  become: True
+  tasks:
+    - name: Install packages
+      apt:
+        name: apache2
+        state: present
+      tags:
+        - install
+    - name: Start Apache server
+      service:
+        name: apache2
+        state: started
+        enabled: True
+      tags:
+        - start
+    - name: Deploy static website
+      copy:
+        src: /home/ansible/playbooks/tag.yml
+        dest: /var/www/html/
+      tags:
+        - deploy     ##{save & exit}
 
-
+ansible-playbook -tag.yml -K
+-------------------------------------------------------------------------------
 
 
 ------------------------
@@ -636,6 +663,13 @@ A.) Yaml or Ionic formate
 Q.) Ansible configuration file location?
 A.) /etc/ansible/ansible.cfg
 
+Q.) How to run a plabook on specific server ?
+A.) Mention IP or Group name on Host parameter in playbook.     ##Note:- use IP or Group name which has entry in Inventory file.
+
+Q.) How to execute spicific task or change task order & skip ?
+A.) With teh help of using tags, you can specifiy a task & order as well.
+ansible-playbook -i customeinv tag.yml -K --tags=start,install    ## run multi task with different order
+ansible-playbook -i customeinv tag.yml -K --skip-tags=install    ## skip a task
 
 
 
