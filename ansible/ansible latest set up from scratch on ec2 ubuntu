@@ -1,0 +1,143 @@
+ansible set up on ec2 ubuntu22
+===============================
+
+launch 2 ec2 :-i.) ansible host
+              ii.) remote server
+			  
+
+#### Connect with Ansible host:-
+
+sudo -i
+apt update
+
+# Installing ansible
+apt install software-properties-common -y
+apt-add-repository ppa:ansible/ansible
+Press--> enter
+apt update
+apt install ansible -y
+adduser ansible 
+visudo
+ansible ALL=(ALL:ALL) ALL     #{add this command below %sudo  ALL=(ALL:ALL) ALL}
+
+##Note:- if you are working on EC2 than follow below 2 step, because by default aws works on key base authentication not password based
+vi /etc/ssh/sshd_config       ##{find 'passwordauthentication' and make it 'yes' and save & exit}   {for redhat uncommand '#'}
+passwordauthentication yes         #{only password user can have entry}
+service ssh restart
+ssh ansible@localhost
+sudo apt-get update
+
+
+
+### Now Connect with Remote Server:-
+
+sudo -i
+apt update
+
+##Note:- if you are working on EC2 than follow below 2 step, because by default aws works on key base authentication not password based
+vi /etc/ssh/sshd_config       ##{find 'passwordauthentication' and make it 'yes' and save & exit}   {for redhat uncommand '#'}
+passwordauthentication yes         #{only password user can have entry}
+service ssh restart
+adduser ansible
+visudo      #adding user to sudo group & so ansible user can run any command
+ansible ALL=(ALL:ALL) ALL     #{add this command below %sudo  ALL=(ALL:ALL) ALL}
+ssh ansible@localhost
+sudo apt update
+
+
+
+
+####  Now Go to Ansible Host & Connect with Remote server:-
+
+ssh ansible@RemoteIPAddress
+exit   OR   ctrl + d
+cd ~
+
+## NOte:- Now going for Passwordless authentication:-
+ssh-keygen
+ssh-copy-id ansible@RemoteIPAddress       ##Can give public ip or private ip
+ssh RemoteIPAddress          ## it shud not ask passwd now
+exit   OR  ctrl+d
+exit 
+cd /etc/ansible/
+ll
+chmod 777 hosts
+vi hosts        #{host file is a inventory which contains remote server IP & other details} #{adding nodes}
+#mynodes            #{adding at last of the file}
+RemoteDNSaddress  or RemoteIPaddress       #{save & exit}
+ansible -m ping all      #('-m' = module, 'all'= pinging all the node which are present in hosts) 
+###########{error :- unreachable , cuzz ssh-copy-id had given for ansible not for root}
+###########{Solution :- switch to the ansible user}
+su ansible
+ansible -m ping all
+exit
+vi /etc/ansible/hosts           #{adding more nodes in inventory file}
+[dbserver]
+node2DNSaddress  or node2IPaddress    #{node2 is a dbserver}
+[appserver]                     ##{group inside the group} {doubt}
+appserver : children
+webserver
+dbserver            ## save & exit
+su ansible
+ansible -m ping dbserver
+su ansible
+cp /etc/ansible/hosts ~           #{coping the inventory file}
+cd ~
+mv hosts myinv
+ansible -m ping all
+ansible -m ping -i myinv all                 #{'-i'= inventory file is not default}   
+######Error
+exit
+
+
+### Now writing a plabook:-
+
+su ansible
+sudo mkdir playbooks
+cd plabooks
+sudo vi myfirstplaybook.yml 
+---                          #{copy from here}
+- hosts: all                   #{where u want to apply, here all means for every machine}
+  tasks:                           #{what u want to apply}
+  - name: ping the node
+    ping:                         #{save & exit]
+	
+
+ansible-playbook myfirstplaybook.yml 
+## {}if you get error than use -K for Become passwd
+ansible-playbook myfirstplaybook.yml -K
+
+vi tag.yml
+---
+- hosts: all
+  become: True
+  tasks:
+    - name: Install packages
+      apt:
+        name: apache2
+        state: present
+      tags:
+        - install
+    - name: Start Apache server
+      service:
+        name: apache2
+        state: started
+        enabled: True
+      tags:
+        - start
+    - name: Deploy static website
+      copy:
+        src: /home/ansible/playbooks/tag.yml
+        dest: /var/www/html/
+      tags:
+        - deploy     ##{save & exit}
+	
+ansible-playbook tag.yml -K
+
+ansible-playbook -i customeinv tag.yml -K --tags=start  ## run a single tasks
+
+ansible-playbook -i customeinv tag.yml -K --tags=start,install    ## run multi task with different order
+
+ansible-playbook -i customeinv tag.yml -K --skip-tags=install    ## skip a task
+
+---------The End--------------------------------------------------------------------------------------
