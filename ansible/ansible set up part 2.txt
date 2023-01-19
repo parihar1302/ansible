@@ -671,8 +671,11 @@ A.) With teh help of using tags, you can specifiy a task & order as well.
 ansible-playbook -i customeinv tag.yml -K --tags=start,install    ## run multi task with different order
 ansible-playbook -i customeinv tag.yml -K --skip-tags=install    ## skip a task
 
-
-
+Q.) How to use dry-run or check mode or do you deploy playbook directly on remote host without any sanity check?
+A.) Check mode OR C parameters we can use.       https://phoenixnap.com/kb/ansible-playbook-dry-run
+    ansible-playbook <filename.yml> --dryrun --diff
+          OR
+    ansible-playbook check-playbook <filename.yml>
 
 
 
